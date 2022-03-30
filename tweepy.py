@@ -160,7 +160,7 @@ for user_id, user_name in zip(users_to_check_ids, users_to_check_list):
     print(tweet.created_at)
   print("END OF THIS USER \n\n\n")
 
-"""### Przykładowa klasa do sprawdzania podstawowych rzeczy związanych z użytkownikiem:"""
+"""### Przykładowa klasa do sprawdzania podstawowych parametrow związanych z użytkownikiem:"""
 
 !pip install matplotlib
 !pip install pandas
@@ -227,6 +227,10 @@ class UserStats(object):
                                 sum([tt.public_metrics["like_count"] for tt in self.last_tweets.data])
         self.reach_score = self.followers_number - self.followed_number
 
+    def get_followers(self, max_results=10):
+        followers = self.client.get_API().get_users_followers(self.id, max_results=max_results)
+        return [follower.username for follower in followers.data]
+
     def print_basic_stats(self):
         print(f"Popularity score: {self.popularity_score}")
         print(f"Reach score: {self.reach_score}")
@@ -235,13 +239,16 @@ joe = UserStats(user="JoeBiden")
     joe.get_tweets(previous_days=60)
     joe.calculate_popularity()
     joe.print_basic_stats()
+    list_of_followers = joe.get_followers()
+    for follower in list_of_followers:
+        print(follower)
 
 create_word_cloud(joe.processed_tweets)
 
 """### Zadania
 
-1. Sprawdzić użytkownikow polskiego twittera pod kątem ich popularnosci i wybrać kilku dosc popularnych.
-2. Sprobowac pisac własne zapytania korzystając z instrukcji na stronie dokumentacji
+1. Sprobowac pisac własne zapytania (query) korzystając z instrukcji na stronie dokumentacji
+2. Moża poszukać roznego rodzaju propagandystow, stworzyć dla nich wordcloud, sprawdzić ich followersow itd. 
 3. Stworzyć własną metrykę popularnosci np. srednia ilosc retweetow na dzień albo na pojedynczego tweeta - mozna wykorzystac te klasę
 """
 
